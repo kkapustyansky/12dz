@@ -15,10 +15,10 @@ for i in films_awards:
                                 'title_film': title_f
                 })
 
-# pp(awards_list)
+pp(awards_list)
 
 awards = sorted(awards_list, key=lambda award: award['award_name'])
-#print(awards)
+print(awards)
 
 
 
