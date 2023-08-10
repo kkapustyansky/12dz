@@ -1,6 +1,10 @@
 import os
 from title_file import films_titles
 from Harry_awards import awards
+import json
+from genres_film import *
+from pprint import pprint
+import csv
 
 
 def Harry_dirs():
@@ -36,3 +40,29 @@ def Harry_dirs():
                 if j['award_name'] == i[i.rfind('\\')+1:] and \
                         j['title_film'] == i[(len(dir_main)):i.rfind('\\')-2].replace('/', ''):
                     file_award.write(j['award'] + '\n')
+
+
+dict_genres = json.loads(genres)
+Harry_dirs = [(os.makedirs(*genre.values(), exist_ok=True), *genre.values()) for genre in dict_genres['results']]
+title_genres_dir = [Harry_dirs[i][1] for i in range(len(Harry_dirs))]
+
+film_info = []
+title_genre = []
+
+for i in films_data:
+    film_info.append({
+        'title': i['title'],
+        'year': i['year'],
+        'rating': i['rating'],
+        'type': i['type'],
+        'genres': [g['genre'] for g in i['gen']]
+    })
+
+for t in title_genres_dir:
+    with open(os.path.join(t, t + '_film_info.csv'), 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['title', 'year', 'rating', 'type', 'genres'])
+        for f in film_info:
+            for g in f['genres']:
+                if g in os.path.join(t, 'film_info.csv'):
+                    writer.writerow(f.values())
